@@ -1,17 +1,43 @@
 import { useState } from "react";
 import Button from './ui/Button';
 import NoProjectSelected from "./ui/NoProjectSelected";
+import DeleteProject from "./ui/DeleteProject";
+import EditProject from "./ui/EditProject";
 
 function App() {
   const [projects, setProjects] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(-1);
+  const [selectedProjectId, setSelectedProjectId] = useState(-1);
   const [mode, setMode] = useState();
+
+    console.log(projects)
 
   function addProject() {
     setProjects([...projects, {
       id: Math.random(),
-      title: 'A Project'
+      title: '',
+      description: '',
+      date: '',
+      status: 'new'
     }])
+  }
+
+  function updateProject(project) {
+    console.log({project})
+    setProjects(projects.map(p => {
+      if (p.id === project.id) {
+        return {...project}
+      } else {
+        return p
+      }
+    }))
+
+  }
+
+  function cancelProject(project) {
+    console.log(project)
+    if (project.status === 'new') {
+      setProjects(projects.filter(p => p.id !== project.id))
+    }
   }
 
   return (
@@ -21,7 +47,7 @@ function App() {
         <Button text='+ Add Project' onClick={addProject}></Button>
         {projects.length ? (
           <ul>
-            {projects.map((project) => (
+            {projects.filter(project => project.status !== 'new').map(project => (
               <li key={project.id}>{project.title}</li>
             ))}
           </ul>
@@ -29,14 +55,12 @@ function App() {
       </aside>
 
       <section className="flex flex-col items-center justify-center">
-        {selectedProject !== -1 ? (
-          <>
-            <div className="flex flex-col items-center justify-center">
-              <h2>Learning React</h2>
-              <Button text='Delete'></Button>
-            </div>
-            <span>Some text...</span>
-          </>
+        {projects.length && projects.some(project => project.status === 'new' || setSelectedProjectId > -1) ? (
+          <EditProject 
+            project={projects.find(project => project.status === 'new' || project.id === selectedProjectId)}
+            onSubmit={project => updateProject(project)}
+            onCancel={project => cancelProject(project)}
+             />
         ) : (
           <NoProjectSelected />
         )}
