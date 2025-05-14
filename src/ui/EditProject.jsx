@@ -8,7 +8,6 @@ export default function EditProject({project, onSubmit, onCancel}) {
     const refDate = useRef()
     const refDescription = useRef()
 
-    console.log({project})
     function onSave() {
         onSubmit({id: project.id, title: refTitle.current.value, description: refDescription.current.value, date: refDate.current.value})
     }
@@ -19,11 +18,11 @@ export default function EditProject({project, onSubmit, onCancel}) {
             <Button text="Save" onClick={onSave}></Button>
         </div>
 
-            <Input className="border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600"
-                label="title" id="title" ref={refTitle} />
-            <textarea name="description" id="description" ref={refDescription}></textarea>
-            <Input className="border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600"
-                label="due date" id="due_date" type="date" ref={refDate} />
+            <Input key={'title' + project.id} className="border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600"
+                label="title" id="title" ref={refTitle} defaultValue={project.title} />
+            <textarea key={'description' + project.id} name="description" id="description" ref={refDescription} defaultValue={project.description}></textarea>
+            <Input key={'date' + project.id} className="border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600"
+                label="due date" id="due_date" type="date" ref={refDate} defaultValue={project.date} />
             
     </>
 }

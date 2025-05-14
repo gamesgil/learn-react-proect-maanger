@@ -37,6 +37,10 @@ function App() {
     console.log(project)
     if (project.status === 'new') {
       setProjects(projects.filter(p => p.id !== project.id))
+    } else {
+      project.status = ''
+      setProjects([...projects.filter(p => p.id !== project.id), {...project}])
+      setSelectedProjectId(-1)
     }
   }
 
@@ -48,21 +52,21 @@ function App() {
         {projects.length ? (
           <ul>
             {projects.filter(project => project.status !== 'new').map(project => (
-              <li key={project.id}>{project.title}</li>
+              <li key={project.id} onClick={() => setSelectedProjectId(project.id)}>{project.title}</li>
             ))}
           </ul>
         ) : null}
       </aside>
 
       <section className="flex flex-col items-center justify-center">
-        {projects.length && projects.some(project => project.status === 'new' || setSelectedProjectId > -1) ? (
+        {projects.length && (projects.some(project => project.status === 'new') || selectedProjectId > -1) ? (
           <EditProject 
             project={projects.find(project => project.status === 'new' || project.id === selectedProjectId)}
             onSubmit={project => updateProject(project)}
             onCancel={project => cancelProject(project)}
              />
         ) : (
-          <NoProjectSelected />
+          <NoProjectSelected isEmpty={!projects.length} />
         )}
       </section>
     </>
