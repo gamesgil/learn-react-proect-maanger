@@ -1,28 +1,35 @@
 import {useRef} from 'react';
 
-import Button from './Button';
-import Input from './Input';
+import Button from "./Button";
 
-export default function EditProject({project, onSubmit, onCancel}) {
-    const refTitle = useRef()
-    const refDate = useRef()
-    const refDescription = useRef()
+export default function EditProject({project, onAddTask, onClearTask, onDeleteProject}) {
+    const refInput = useRef();
 
-    function onSave() {
-        onSubmit({id: project.id, title: refTitle.current.value, description: refDescription.current.value, date: refDate.current.value})
+    function addTask() {
+        if (refInput.current.value) {
+            onAddTask(refInput.current.value)
+            refInput.current.value = ''    
+        }
     }
 
-    return <>
+    function clearTask(idx) {
+        onClearTask(idx)
+    }
+    
+    return <div>
+        <div><h2>{project.title}</h2><Button text='Delete' onClick={onDeleteProject} /></div>
+        <span className="date">{project.date}</span>
+        <p>{project.description}</p>
+        <hr />
+        <h3>Tasks</h3>
         <div>
-            <Button text="Cancel" onClick={() => onCancel(project)}></Button>
-            <Button text="Save" onClick={onSave}></Button>
+        <input type="text" ref={refInput} defaultValue='' />
+        <button onClick={addTask} >Add Task</button>
         </div>
-
-            <Input key={'title' + project.id} className="border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600"
-                label="title" id="title" ref={refTitle} defaultValue={project.title} />
-            <textarea key={'description' + project.id} name="description" id="description" ref={refDescription} defaultValue={project.description}></textarea>
-            <Input key={'date' + project.id} className="border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600"
-                label="due date" id="due_date" type="date" ref={refDate} defaultValue={project.date} />
-            
-    </>
+        <ul>
+            {project.tasks.map(task => <li key={task.id}>
+                <div>{task.name}</div><button onClick={() => clearTask(task.id)}>Clear</button>
+            </li>)}
+        </ul>
+    </div>
 }
