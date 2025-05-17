@@ -8,7 +8,7 @@ export default function EditProject() {
     const project = projectCtx.projects.find(p => p.id === projectCtx.selectedProjectId);
     const refInput = useRef();
 
-    function addTask(name) {
+    function addTask() {
         projectCtx.addTask(refInput.current.value);
         refInput.current.value = '';
     }
