@@ -33,29 +33,27 @@ export default function ProjectContextProvider({ children }) {
 
 
   function addProject() {
-    setProjects([...projects, new Project()]);
+    setProjects(prevProjects => [...prevProjects, new Project()]);
     setSelectedProjectId(-1);
   }
 
   function updateProject(project) {
-    const mapped = projects.map((p) => {
+    setProjects(prevProjects => prevProjects.map((p) => {
       if (p.id === project.id) {
         return { ...project };
       } else {
         return p;
       }
-    });
-
-    setProjects(mapped);
+    }));
   }
 
   function cancelProject(project) {
     if (project.status === "new") {
-      setProjects(projects.filter((p) => p.id !== project.id));
+      setProjects(prevProjects => prevProjects.filter((p) => p.id !== project.id));
     } else {
       project.status = "";
-      setProjects([
-        ...projects.filter((p) => p.id !== project.id),
+      setProjects(prevProjects => [
+        ...prevProjects.filter((p) => p.id !== project.id),
         { ...project },
       ]);
 
@@ -65,20 +63,19 @@ export default function ProjectContextProvider({ children }) {
 
   function addTask(name) {
     const task = new Task(name);
-    const mapped = projects.map((p) => {
+
+    setProjects(prevProjects => prevProjects.map((p) => {
       if (p.id === selectedProjectId) {
         return { ...p, tasks: [...p.tasks, task] };
       } else {
         return p;
       }
-    });
-
-    setProjects(mapped);
+    }));
   }
 
   function clearTask(taskId) {
-    setProjects((projects) =>
-      projects.map((p) => {
+    setProjects((prevProjects) =>
+      prevProjects.map((p) => {
         if (p.id === selectedProjectId) {
           return { ...p, tasks: p.tasks.filter((task) => task.id !== taskId) };
         } else {
@@ -90,7 +87,7 @@ export default function ProjectContextProvider({ children }) {
 
   function deleteProject() {
     setSelectedProjectId(-1);
-    setProjects(projects.filter((project) => project.id !== selectedProjectId));
+    setProjects(prevProjects => prevProjects.filter((project) => project.id !== selectedProjectId));
   }
 
   return (
