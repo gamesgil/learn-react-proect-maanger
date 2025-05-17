@@ -15,21 +15,18 @@ export default function CreateProject() {
   const project = projectCtx.projects.find((p) => p.status === "new");
 
   function onSave() {
-    console.log("on save");
     project.title = refTitle.current.value;
     project.description = refDescription.current.value;
     project.date = refDate.current.value;
     project.status = "";
 
     projectCtx.updateProject(project);
-    console.log({ project });
-    console.log(projectCtx);
   }
 
   return (
     <>
       <div>
-        <Button text="Cancel" onClick={() => onCancel(project)}></Button>
+        <Button text="Cancel" onClick={() => projectCtx.cancelProject(project)}></Button>
         <Button text="Save" onClick={onSave}></Button>
       </div>
 
