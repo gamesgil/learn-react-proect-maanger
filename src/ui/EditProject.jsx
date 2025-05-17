@@ -1,23 +1,20 @@
-import {useRef} from 'react';
+import {useRef, useContext} from 'react';
 
 import Button from "./Button";
+import { ProjectContext } from '../store/project.context';
 
-export default function EditProject({project, onAddTask, onClearTask, onDeleteProject}) {
+export default function EditProject() {
+    const projectCtx = useContext(ProjectContext);
+    const project = projectCtx.projects.find(p => p.id === projectCtx.selectedProjectId);
     const refInput = useRef();
 
-    function addTask() {
-        if (refInput.current.value) {
-            onAddTask(refInput.current.value)
-            refInput.current.value = ''    
-        }
+    function addTask(name) {
+        projectCtx.addTask(refInput.current.value);
+        refInput.current.value = '';
     }
 
-    function clearTask(idx) {
-        onClearTask(idx)
-    }
-    
     return <div>
-        <div><h2>{project.title}</h2><Button text='Delete' onClick={onDeleteProject} /></div>
+        <div><h2>{project.title}</h2><Button text='Delete' onClick={projectCtx.deleteProject} /></div>
         <span className="date">{project.date}</span>
         <p>{project.description}</p>
         <hr />
@@ -28,7 +25,7 @@ export default function EditProject({project, onAddTask, onClearTask, onDeletePr
         </div>
         <ul>
             {project.tasks.map(task => <li key={task.id}>
-                <div>{task.name}</div><button onClick={() => clearTask(task.id)}>Clear</button>
+                <div>{task.name}</div><button onClick={() => projectCtx.clearTask(task.id)}>Clear</button>
             </li>)}
         </ul>
     </div>

@@ -1,21 +1,29 @@
-import {useRef} from 'react';
+import {useRef, useContext} from 'react';
 
 import Button from './Button';
 import Input from './Input';
 
+import {Project} from '../models';
 
-export default function CreateProject({project, onSubmit, onCancel}) {
+import {ProjectContext} from '../store/project.context';
+
+export default function CreateProject() {
     const refTitle = useRef()
     const refDate = useRef()
     const refDescription = useRef()
+    const projectCtx = useContext(ProjectContext);
+    const project = projectCtx.projects.find(p => p.status === 'new')
 
     function onSave() {
+        console.log('on save')
         project.title = refTitle.current.value;
         project.description = refDescription.current.value;
         project.date = refDate.current.value;
         project.status = '';
 
-        onSubmit(project);
+        projectCtx.updateProject(project);
+        console.log({project})
+        console.log(projectCtx)
     }
 
     return <>
